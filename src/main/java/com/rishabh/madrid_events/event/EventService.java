@@ -43,7 +43,7 @@ public class EventService {
                 request.venue(),
                 request.startTime(),
                 request.endTime(),
-                request.free()
+                Boolean.TRUE.equals(request.free())
         );
 
         return EventResponse.from(eventRepository.save(event));

@@ -21,6 +21,6 @@ public record CreateEventRequest(
         LocalDateTime startTime,
 
         LocalDateTime endTime,
-        boolean free
+        Boolean free
 ) {
 }
