@@ -37,6 +37,16 @@ public class Event {
         this.free = free;
     }
 
+    public void update(String title, String category, String venue,
+                       LocalDateTime startTime, LocalDateTime endTime, boolean free) {
+        this.title = title;
+        this.category = category;
+        this.venue = venue;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.free = free;
+    }
+
     public Long getId() {
         return id;
     }

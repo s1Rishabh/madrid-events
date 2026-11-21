@@ -48,4 +48,29 @@ public class EventService {
 
         return EventResponse.from(eventRepository.save(event));
     }
+
+    @Transactional
+    public EventResponse updateEvent(Long id, UpdateEventRequest request) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new EventNotFoundException(id));
+
+        event.update(
+                request.title(),
+                request.category(),
+                request.venue(),
+                request.startTime(),
+                request.endTime(),
+                Boolean.TRUE.equals(request.free())
+        );
+
+        return EventResponse.from(event);
+    }
+
+    @Transactional
+    public void deleteEvent(Long id) {
+        if (!eventRepository.existsById(id)) {
+            throw new EventNotFoundException(id);
+        }
+        eventRepository.deleteById(id);
+    }
 }

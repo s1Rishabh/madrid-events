@@ -31,4 +31,16 @@ public class EventController {
     public EventResponse createEvent(@Valid @RequestBody CreateEventRequest request) {
         return eventService.createEvent(request);
     }
+
+    @PutMapping("/{id}")
+    public EventResponse updateEvent(@PathVariable Long id,
+                                     @Valid @RequestBody UpdateEventRequest request) {
+        return eventService.updateEvent(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteEvent(@PathVariable Long id) {
+        eventService.deleteEvent(id);
+    }
 }
