@@ -1,8 +1,8 @@
 package com.rishabh.madrid_events.event;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -10,38 +10,25 @@ import java.util.List;
 @RequestMapping("/api/events")
 public class EventController {
 
-    private final EventRepository eventRepository;
+    private final EventService eventService;
 
-    public EventController(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
     }
 
     @GetMapping
-    public List<Event> getEvents(@RequestParam(required = false) String category) {
-        if (category == null) {
-            return eventRepository.findAll();
-        }
-        return eventRepository.findByCategory(category);
+    public List<EventResponse> getEvents(@RequestParam(required = false) String category) {
+        return eventService.getEvents(category);
     }
 
     @GetMapping("/{id}")
-    public Event getEvent(@PathVariable Long id) {
-        return eventRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+    public EventResponse getEvent(@PathVariable Long id) {
+        return eventService.getEvent(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Event createEvent(@RequestBody CreateEventRequest request) {
-        Event event = new Event(
-                request.externalId(),
-                request.title(),
-                request.category(),
-                request.venue(),
-                request.startTime(),
-                request.endTime(),
-                request.free()
-        );
-        return eventRepository.save(event);
+    public EventResponse createEvent(@Valid @RequestBody CreateEventRequest request) {
+        return eventService.createEvent(request);
     }
 }
