@@ -1,8 +1,10 @@
 package com.rishabh.madrid_events.event;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,12 +16,26 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
-    public List<EventResponse> getEvents(String category) {
-        List<Event> events = (category == null)
-                ? eventRepository.findAll()
-                : eventRepository.findByCategory(category);
+    public List<EventResponse> searchEvents(EventFilter filter) {
+        List<Specification<Event>> specs = new ArrayList<>();
 
-        return events.stream()
+        if (filter.category() != null) {
+            specs.add(EventSpecifications.hasCategory(filter.category()));
+        }
+        if (filter.free() != null) {
+            specs.add(EventSpecifications.isFree(filter.free()));
+        }
+        if (filter.from() != null) {
+            specs.add(EventSpecifications.startsOnOrAfter(filter.from().atStartOfDay()));
+        }
+        if (filter.to() != null) {
+            specs.add(EventSpecifications.startsBefore(filter.to().plusDays(1).atStartOfDay()));
+        }
+        if (filter.q() != null && !filter.q().isBlank()) {
+            specs.add(EventSpecifications.titleContains(filter.q().trim()));
+        }
+
+        return eventRepository.findAll(Specification.allOf(specs)).stream()
                 .map(EventResponse::from)
                 .toList();
     }

@@ -1,9 +1,11 @@
 package com.rishabh.madrid_events.event;
 
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -17,8 +19,13 @@ public class EventController {
     }
 
     @GetMapping
-    public List<EventResponse> getEvents(@RequestParam(required = false) String category) {
-        return eventService.getEvents(category);
+    public List<EventResponse> getEvents(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Boolean free,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+            @RequestParam(required = false) String q) {
+        return eventService.searchEvents(new EventFilter(category, free, from, to, q));
     }
 
     @GetMapping("/{id}")
