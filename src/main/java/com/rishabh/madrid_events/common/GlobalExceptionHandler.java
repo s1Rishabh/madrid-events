@@ -2,6 +2,9 @@ package com.rishabh.madrid_events.common;
 
 import com.rishabh.madrid_events.event.DuplicateEventException;
 import com.rishabh.madrid_events.event.EventNotFoundException;
+import com.rishabh.madrid_events.importer.MadridFeedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -14,8 +17,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.HashMap;
 import java.util.Map;
 
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(EventNotFoundException.class)
     public ProblemDetail handleNotFound(EventNotFoundException ex) {
@@ -42,6 +48,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ProblemDetail handleUnreadable(HttpMessageNotReadableException ex) {
+        log.warn("Could not read JSON: {}", ex.getMostSpecificCause().getMessage());
         return ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST, "Request body is missing or has the wrong format");
     }
@@ -57,4 +64,11 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST, "Cannot sort by '" + ex.getPropertyName() + "'");
     }
+    @ExceptionHandler(MadridFeedException.class)
+    public ProblemDetail handleFeedError(MadridFeedException ex) {
+        log.error("Madrid feed error", ex);
+        return ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_GATEWAY, "The Madrid events feed is not available right now");
+    }
+
 }
