@@ -1,6 +1,9 @@
 package com.rishabh.madrid_events.event;
 
+import com.rishabh.madrid_events.common.PageResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +22,14 @@ public class EventController {
     }
 
     @GetMapping
-    public List<EventResponse> getEvents(
+    public PageResponse<EventResponse> getEvents(
             @RequestParam(required = false) String category,
             @RequestParam(required = false) Boolean free,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
-            @RequestParam(required = false) String q) {
-        return eventService.searchEvents(new EventFilter(category, free, from, to, q));
+            @RequestParam(required = false) String q,
+            @PageableDefault(size = 20, sort = "startTime") Pageable pageable) {
+        return eventService.searchEvents(new EventFilter(category, free, from, to, q), pageable);
     }
 
     @GetMapping("/{id}")

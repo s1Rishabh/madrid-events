@@ -1,5 +1,8 @@
 package com.rishabh.madrid_events.event;
 
+import com.rishabh.madrid_events.common.PageResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +19,7 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
-    public List<EventResponse> searchEvents(EventFilter filter) {
+    public PageResponse<EventResponse> searchEvents(EventFilter filter, Pageable pageable) {
         List<Specification<Event>> specs = new ArrayList<>();
 
         if (filter.category() != null) {
@@ -35,9 +38,11 @@ public class EventService {
             specs.add(EventSpecifications.titleContains(filter.q().trim()));
         }
 
-        return eventRepository.findAll(Specification.allOf(specs)).stream()
-                .map(EventResponse::from)
-                .toList();
+        Page<EventResponse> page = eventRepository
+                .findAll(Specification.allOf(specs), pageable)
+                .map(EventResponse::from);
+
+        return PageResponse.from(page);
     }
 
     public EventResponse getEvent(Long id) {

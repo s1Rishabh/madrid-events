@@ -2,6 +2,7 @@ package com.rishabh.madrid_events.common;
 
 import com.rishabh.madrid_events.event.DuplicateEventException;
 import com.rishabh.madrid_events.event.EventNotFoundException;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -49,5 +50,11 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleBadParameter(MethodArgumentTypeMismatchException ex) {
         return ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST, "Invalid value for parameter '" + ex.getName() + "'");
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ProblemDetail handleBadSort(PropertyReferenceException ex) {
+        return ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, "Cannot sort by '" + ex.getPropertyName() + "'");
     }
 }
