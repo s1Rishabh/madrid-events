@@ -29,7 +29,7 @@ public class EventService {
             specs.add(EventSpecifications.isFree(filter.free()));
         }
         if (filter.from() != null) {
-            specs.add(EventSpecifications.startsOnOrAfter(filter.from().atStartOfDay()));
+            specs.add(EventSpecifications.activeOnOrAfter(filter.from().atStartOfDay()));
         }
         if (filter.to() != null) {
             specs.add(EventSpecifications.startsBefore(filter.to().plusDays(1).atStartOfDay()));

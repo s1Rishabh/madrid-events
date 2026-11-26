@@ -18,9 +18,14 @@ public final class EventSpecifications {
         return (root, query, cb) -> cb.equal(root.get("free"), free);
     }
 
-    public static Specification<Event> startsOnOrAfter(LocalDateTime from) {
-        return (root, query, cb) ->
-                cb.greaterThanOrEqualTo(root.<LocalDateTime>get("startTime"), from);
+    public static Specification<Event> activeOnOrAfter(LocalDateTime from) {
+        return (root, query, cb) -> cb.or(
+                cb.greaterThanOrEqualTo(root.<LocalDateTime>get("endTime"), from),
+                cb.and(
+                        cb.isNull(root.get("endTime")),
+                        cb.greaterThanOrEqualTo(root.<LocalDateTime>get("startTime"), from)
+                )
+        );
     }
 
     public static Specification<Event> startsBefore(LocalDateTime to) {

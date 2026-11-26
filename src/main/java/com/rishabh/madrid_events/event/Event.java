@@ -47,6 +47,35 @@ public class Event {
         this.free = free;
     }
 
+    public void updateDetails(String description, String price, String link,
+                              Double latitude, Double longitude) {
+        this.description = description;
+        this.price = price;
+        this.link = link;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
     public Long getId() {
         return id;
     }
@@ -78,4 +107,16 @@ public class Event {
     public boolean isFree() {
         return free;
     }
+
+    @Column(columnDefinition = "text")
+    private String description;
+
+    @Column(columnDefinition = "text")
+    private String price;
+
+    @Column(columnDefinition = "text")
+    private String link;
+
+    private Double latitude;
+    private Double longitude;
 }

@@ -9,7 +9,12 @@ public record EventResponse(
         String venue,
         LocalDateTime startTime,
         LocalDateTime endTime,
-        boolean free
+        boolean free,
+        String description,
+        String price,
+        String link,
+        Double latitude,
+        Double longitude
 ) {
     public static EventResponse from(Event event) {
         return new EventResponse(
@@ -19,7 +24,12 @@ public record EventResponse(
                 event.getVenue(),
                 event.getStartTime(),
                 event.getEndTime(),
-                event.isFree()
+                event.isFree(),
+                event.getDescription(),
+                event.getPrice(),
+                event.getLink(),
+                event.getLatitude(),
+                event.getLongitude()
         );
     }
 }
