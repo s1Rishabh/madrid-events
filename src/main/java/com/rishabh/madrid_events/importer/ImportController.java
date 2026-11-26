@@ -9,11 +9,11 @@ import java.util.List;
 public class ImportController {
 
     private final MadridFeedClient feedClient;
-    private final EventImportService importService;
+    private final ImportJob importJob;
 
-    public ImportController(MadridFeedClient feedClient, EventImportService importService) {
+    public ImportController(MadridFeedClient feedClient, ImportJob importJob) {
         this.feedClient = feedClient;
-        this.importService = importService;
+        this.importJob = importJob;
     }
 
     @GetMapping("/preview")
@@ -23,7 +23,12 @@ public class ImportController {
     }
 
     @PostMapping("/run")
-    public ImportResult run() {
-        return importService.importEvents();
+    public ImportRunResponse run() {
+        return importJob.run();
+    }
+
+    @GetMapping("/runs")
+    public List<ImportRunResponse> runs() {
+        return importJob.recentRuns();
     }
 }
